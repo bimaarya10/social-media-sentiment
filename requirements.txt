@@ -1,5 +1,5 @@
 streamlit
 joblib
-scikit-learn==1.2.2
+scikit-learn
 nltk
 Sastrawi
