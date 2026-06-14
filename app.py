@@ -1,13 +1,12 @@
 import streamlit as st
 import joblib
 import re
-import ssl # Tambahkan ini
+import ssl 
 import nltk
 from nltk.corpus import stopwords as nltk_stopwords
 from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
 
 # --- INISIALISASI NLP & BYPASS SSL MAC ---
-# Mengatasi error SSL Certificate Verify Failed pada Mac
 try:
     _create_unverified_https_context = ssl._create_unverified_context
 except AttributeError:
@@ -15,7 +14,6 @@ except AttributeError:
 else:
     ssl._create_default_https_context = _create_unverified_https_context
 
-# Download stopwords jika belum ada
 try:
     nltk.data.find('corpora/stopwords')
 except LookupError:
@@ -28,7 +26,6 @@ stemmer = factory.create_stemmer()
 # --- FUNGSI LOAD MODEL ---
 @st.cache_resource
 def load_models():
-    # Pastikan file model dan vectorizer Anda bernama sama
     model = joblib.load('model_svm_tfidf.pkl')
     vectorizer = joblib.load('tfidf_vectorizer.pkl')
     return model, vectorizer
@@ -51,7 +48,7 @@ st.set_page_config(page_title="Sentimen Analisis Twitter", page_icon="🐦", lay
 
 st.title("🐦 Dashboard Analisis Sentimen Twitter")
 
-# Membuat dua Tab untuk merapikan tampilan sesuai 4 poin fitur minimal
+
 tab1, tab2 = st.tabs(["🔍 Prediksi Sentimen", "ℹ️ Informasi Model & Evaluasi"])
 
 with tab1:
@@ -103,16 +100,15 @@ with tab2:
     
     st.divider()
 
-    # Fitur 4: Hasil evaluasi model (accuracy atau metrik lainnya)
+    # Fitur 4: Hasil evaluasi model 
     st.subheader("Hasil Evaluasi Model")
     st.write("Berdasarkan proses pengujian (testing) yang telah dilakukan saat pelatihan, berikut adalah metrik performa model:")
     
     # Menggunakan st.columns untuk tampilan metrik yang lebih profesional
     col1, col2, col3 = st.columns(3)
     
-    # SILAKAN UBAH ANGKA DI BAWAH INI SESUAI DENGAN HASIL TRAINING ANDA SEBENARNYA
-    col1.metric(label="Accuracy", value="85.5%")
-    col2.metric(label="Precision", value="84.2%")
-    col3.metric(label="Recall", value="86.1%")
+    col1.metric(label="Accuracy", value="62.5%")
+    col2.metric(label="Precision", value="60%")
+    col3.metric(label="Recall", value="58%")
     
-    st.info("Catatan: Metrik di atas dievaluasi menggunakan data *testing* sebesar [UBAH: persentase split, misal 20%].")
+    st.info("Catatan: Metrik di atas dievaluasi menggunakan data *testing* sebesar 20% dari total dataset, dengan pembagian 80% untuk pelatihan dan 20% untuk pengujian.")
